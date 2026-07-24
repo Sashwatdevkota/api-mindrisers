@@ -8,3 +8,9 @@ admin.site.register(Menu)
 admin.site.register(Table)
 admin.site.register(Order)
 admin.site.register(OrderMenu)
+
+# admin customization
+
+
+# INTEGRATE NOTES INTO TO DO LIST
+# ADMIN CUSTOMIZATION

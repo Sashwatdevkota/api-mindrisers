@@ -47,3 +47,6 @@ is_paid (Boolean)
 # OrderMenu
 order (Foreign key Order)
 menu (Foreign key Menu)
+
+password for postgres superuser:
+PASSWORD: password
