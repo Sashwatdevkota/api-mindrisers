@@ -50,3 +50,17 @@ menu (Foreign key Menu)
 
 password for postgres superuser:
 PASSWORD: password
+
+
+REST FRAMEWORK
+
+RE: Representational: representational of resources in a format (JSON)
+S:  State : current state of resources
+T:  Transfer: transfer between clients and server
+
+Uses:
+
+GET
+POST
+PUT/PATCH
+DELETE
