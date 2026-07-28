@@ -35,7 +35,7 @@ class Table(models.Model):
     is_available = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name
+        return f"Table {self.num} - {'Available' if self.is_available else 'Occupied'}"
 
 
 class Order(models.Model):
