@@ -6,5 +6,6 @@ urlpatterns = [
     # path("home/", home),
     path("index/", index),
     path("category/", category_list),
+    path("category/<id>", category_detail),
     path("table/", table_list),
 ]

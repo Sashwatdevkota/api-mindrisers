@@ -28,5 +28,23 @@ def table_list(request):
     return Response(serializer.data)
 
 
+@api_view(["GET", "DELETE", "PUT"])
+def category_detail(request, id):
+    category = Category.objects.get(id=id)
+    if request.method == "GET":
+        serializers = CategorySerializer(category)
+        return Response(serializers.data)
+    elif request.method == "DELETE":
+        item = OrderMenu.objects.filter(menu__category=category).count()
+        if item > 0:
+            return Response(
+                {
+                    "message": "Data can not be deleted. Protected Foreign Key in Order Menu"
+                }
+            )
+        category.delete()
+        return Response({"message": "Data has been deleted"})
+
+
 def index(request):
     return render(request, "index.html")
