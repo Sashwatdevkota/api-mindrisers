@@ -21,19 +21,25 @@ def category_list(request):
         return Response({"message": "Data added", "result": serializer.data})
 
 
-@api_view(["GET"])
-def table_list(request):
-    table = Table.objects.all()
-    serializer = TableSerializer(table, many=True)
-    return Response(serializer.data)
-
-
 @api_view(["GET", "DELETE", "PUT"])
 def category_detail(request, id):
     category = Category.objects.get(id=id)
     if request.method == "GET":
         serializers = CategorySerializer(category)
         return Response(serializers.data)
+
+    elif request.method == "PUT":
+        serializer = CategorySerializer(category, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
     elif request.method == "DELETE":
         item = OrderMenu.objects.filter(menu__category=category).count()
         if item > 0:
@@ -44,6 +50,13 @@ def category_detail(request, id):
             )
         category.delete()
         return Response({"message": "Data has been deleted"})
+
+
+@api_view(["GET"])
+def table_list(request):
+    table = Table.objects.all()
+    serializer = TableSerializer(table, many=True)
+    return Response(serializer.data)
 
 
 def index(request):
