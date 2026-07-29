@@ -8,4 +8,5 @@ urlpatterns = [
     path("category/", category_list),
     path("category/<id>", category_detail),
     path("table/", table_list),
+    path("table/<id>", table_detail),
 ]

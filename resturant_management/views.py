@@ -52,11 +52,42 @@ def category_detail(request, id):
         return Response({"message": "Data has been deleted"})
 
 
-@api_view(["GET"])
+@api_view(["GET", "POST"])
 def table_list(request):
-    table = Table.objects.all()
-    serializer = TableSerializer(table, many=True)
-    return Response(serializer.data)
+    if request.method == "GET":
+        table = Table.objects.all()
+        serializer = TableSerializer(table, many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer = TableSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"message": "Data added", "result": serializer.data})
+
+
+@api_view(["GET", "DELETE", "PUT"])
+def table_detail(request, id):
+    table = Table.objects.get(id=id)
+    if request.method == "GET":
+        serializers = TableSerializer(table)
+        return Response(serializers.data)
+
+    elif request.method == "PUT":
+        serializer = TableSerializer(table, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
+    elif request.method == "DELETE":
+
+        table.delete()
+        return Response({"message": "Data has been deleted"})
 
 
 def index(request):
