@@ -12,6 +12,9 @@ urlpatterns = [
     # CLASS BASED
     # path("category/", CategoryView.as_view()),
     # path("category/<id>", CategoryView_Detail.as_view()),
-    path("category/", CategoryGeneric.as_view()),
-    path("category/<id>", CategoryGeneric_Detail.as_view()),
+    # GENERIC APIS
+    # path("category/", CategoryGeneric.as_view()),
+    # path("category/<id>", CategoryGeneric_Detail.as_view()),
+    path("table/", TableGeneric.as_view()),
+    path("table/<id>", TableDetailGeneric.as_view()),
 ]

@@ -10,15 +10,70 @@ from .serializer import *  # importing all serializers(converting queryset to js
 # Generic API
 from rest_framework.generics import GenericAPIView
 
+# class CategoryGeneric(GenericAPIView):
+#     queryset = Category.objects.all()
+#     serializer_class = CategorySerializer
 
-class CategoryGeneric(GenericAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+#     def get(self, request):  # request handler
 
-    def get(self, request):  # request handler
+#         category = self.get_queryset()
+#         serializer = self.serializer_class(category, many=True)
+#         return Response(serializer.data)
 
-        category = self.get_queryset()
-        serializer = self.serializer_class(category, many=True)
+#     def post(self, request):
+#         serializer = self.serializer_class(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response({"message": "Data added", "result": serializer.data})
+
+
+# class CategoryGeneric_Detail(GenericAPIView):
+# queryset = Category.objects.all()
+# serializer_class = CategorySerializer
+# lookup_field = "id"
+
+# def get(self, request, id):
+
+#     category = self.get_object()
+#     serializers = self.serializer_class(category)
+#     return Response(serializers.data)
+
+# def put(self, request, id):
+
+#     category = self.get_object()
+#     serializer = CategorySerializer(category, data=request.data)
+#     serializer.is_valid(raise_exception=True)
+#     serializer.save()
+
+#     return Response(
+#         {
+#             "message": "Data updated successfully",
+#             "result": serializer.data,
+#         }
+#     )
+
+# def delete(self, request, id):
+
+#     category = self.get_object()
+#     item = OrderMenu.objects.filter(menu__category=category).count()
+#     if item > 0:
+#         return Response(
+#             {
+#                 "message": "Data can not be deleted. Protected Foreign Key in Order Menu"
+#             }
+#         )
+#     category.delete()
+#     return Response({"message": "Data has been deleted"})
+
+
+class TableGeneric(GenericAPIView):
+
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+
+    def get(self, request):
+        table = self.get_queryset()
+        serializer = self.serializer_class(table, many=True)
         return Response(serializer.data)
 
     def post(self, request):
@@ -28,16 +83,8 @@ class CategoryGeneric(GenericAPIView):
         return Response({"message": "Data added", "result": serializer.data})
 
 
-class CategoryGeneric_Detail(GenericAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    lookup_field = "id"
-
-    def get(self, request, id):
-
-        category = self.get_object()
-        serializers = self.serializer_class(category)
-        return Response(serializers.data)
+class TableDetailGeneric(GenericAPIView):
+    pass
 
 
 # CLASS BASED API
