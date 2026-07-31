@@ -16,5 +16,5 @@ urlpatterns = [
     # path("category/", CategoryGeneric.as_view()),
     # path("category/<id>", CategoryGeneric_Detail.as_view()),
     path("table/", TableGeneric.as_view()),
-    path("table/<id>", TableDetailGeneric.as_view()),
+    path("table/<pk>", TableDetailGeneric.as_view()),
 ]

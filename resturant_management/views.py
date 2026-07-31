@@ -26,7 +26,6 @@ from rest_framework.generics import GenericAPIView
 #         serializer.save()
 #         return Response({"message": "Data added", "result": serializer.data})
 
-
 # class CategoryGeneric_Detail(GenericAPIView):
 # queryset = Category.objects.all()
 # serializer_class = CategorySerializer
@@ -84,12 +83,40 @@ class TableGeneric(GenericAPIView):
 
 
 class TableDetailGeneric(GenericAPIView):
-    pass
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+
+    def get(self, request, pk):
+
+        table = self.get_object()
+        serializers = self.serializer_class(table)
+        return Response(serializers.data)
+
+    def put(self, request, pk):
+
+        table = self.get_object()
+        serializer = self.serializer_class(table, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
+    def delete(self, request, pk):
+        table = self.get_object()
+        table.delete()
+        return Response({"message": "Data has been deleted"})
 
 
+#############################
 # CLASS BASED API
-# from rest_framework.views import APIView
+##############################
 
+# from rest_framework.views import APIView
 
 # class CategoryView(APIView):
 #     def get(self, request):  # request handler
@@ -104,7 +131,6 @@ class TableDetailGeneric(GenericAPIView):
 #         serializer.is_valid(raise_exception=True)
 #         serializer.save()
 #         return Response({"message": "Data added", "result": serializer.data})
-
 
 # class CategoryView_Detail(APIView):
 
@@ -141,8 +167,10 @@ class TableDetailGeneric(GenericAPIView):
 #         category.delete()
 #         return Response({"message": "Data has been deleted"})
 
-
+###########################
 # FUNCTION BASED API
+###############################
+
 # @api_view(["GET", "POST"])
 # def category_list(request):
 #     if request.method == "GET":
