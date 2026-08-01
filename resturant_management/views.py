@@ -7,8 +7,29 @@ from .serializer import *  # importing all serializers(converting queryset to js
 
 # Create your views here.
 
-# Generic API
+#############################
+#
+################################
+
 from rest_framework.generics import GenericAPIView
+from rest_framework import mixins
+
+
+class CategoryGeneric(GenericAPIView, mixins):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get(self, request):
+        return self.list(self, request)
+
+    def post(self, request):
+        return self.create(self,request)
+
+########################
+# Generic API
+########################
+
+# from rest_framework.generics import GenericAPIView
 
 # class CategoryGeneric(GenericAPIView):
 #     queryset = Category.objects.all()
@@ -65,51 +86,51 @@ from rest_framework.generics import GenericAPIView
 #     return Response({"message": "Data has been deleted"})
 
 
-class TableGeneric(GenericAPIView):
+# class TableGeneric(GenericAPIView):
 
-    queryset = Table.objects.all()
-    serializer_class = TableSerializer
+#     queryset = Table.objects.all()
+#     serializer_class = TableSerializer
 
-    def get(self, request):
-        table = self.get_queryset()
-        serializer = self.serializer_class(table, many=True)
-        return Response(serializer.data)
+#     def get(self, request):
+#         table = self.get_queryset()
+#         serializer = self.serializer_class(table, many=True)
+#         return Response(serializer.data)
 
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"message": "Data added", "result": serializer.data})
+#     def post(self, request):
+#         serializer = self.serializer_class(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response({"message": "Data added", "result": serializer.data})
 
 
-class TableDetailGeneric(GenericAPIView):
-    queryset = Table.objects.all()
-    serializer_class = TableSerializer
+# class TableDetailGeneric(GenericAPIView):
+#     queryset = Table.objects.all()
+#     serializer_class = TableSerializer
 
-    def get(self, request, pk):
+#     def get(self, request, pk):
 
-        table = self.get_object()
-        serializers = self.serializer_class(table)
-        return Response(serializers.data)
+#         table = self.get_object()
+#         serializers = self.serializer_class(table)
+#         return Response(serializers.data)
 
-    def put(self, request, pk):
+#     def put(self, request, pk):
 
-        table = self.get_object()
-        serializer = self.serializer_class(table, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+#         table = self.get_object()
+#         serializer = self.serializer_class(table, data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
 
-        return Response(
-            {
-                "message": "Data updated successfully",
-                "result": serializer.data,
-            }
-        )
+#         return Response(
+#             {
+#                 "message": "Data updated successfully",
+#                 "result": serializer.data,
+#             }
+#         )
 
-    def delete(self, request, pk):
-        table = self.get_object()
-        table.delete()
-        return Response({"message": "Data has been deleted"})
+#     def delete(self, request, pk):
+#         table = self.get_object()
+#         table.delete()
+#         return Response({"message": "Data has been deleted"})
 
 
 #############################
