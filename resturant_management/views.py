@@ -9,7 +9,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet
 
 
 from .models import Category, Table, OrderMenu
@@ -17,6 +17,16 @@ from .serializer import (
     CategorySerializer,
     TableSerializer,
 )  # importing serializers(converting queryset to json)
+
+############################
+# ModelViewSet
+############################
+
+
+class CategoryModelViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
 
 ###############################################
 # View Set
