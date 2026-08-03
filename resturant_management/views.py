@@ -248,3 +248,104 @@ class TableDetailGenericAPIView(GenericAPIView):
         table = self.get_object()
         table.delete()
         return Response({"message": "Data has been deleted."})
+
+
+###############################################
+# APIView
+###############################################
+
+from rest_framework.views import APIView
+
+
+class CategoryAPIView(APIView):
+    def get(self, request):
+        category = Category.objects.all()
+        serializer = CategorySerializer(category, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = CategorySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {
+                "message": "Data added",
+                "result": serializer.data,
+            }
+        )
+
+
+class CategoryDetailAPIView(APIView):
+    def get(self, request, id):
+        category = Category.objects.get(id=id)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+    def put(self, request, id):
+        category = Category.objects.get(id=id)
+        serializer = CategorySerializer(category, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
+    def delete(self, request, id):
+        category = Category.objects.get(id=id)
+
+        item = OrderMenu.objects.filter(menu__category=category).count()
+
+        if item > 0:
+            return Response(
+                {"message": "Data can't be deleted. Protected Foreign Key in OrderMenu"}
+            )
+
+        category.delete()
+        return Response({"message": "Data has been deleted."})
+
+
+class TableAPIView(APIView):
+    def get(self, request):
+        table = Table.objects.all()
+        serializer = TableSerializer(table, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = TableSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {
+                "message": "Data added",
+                "result": serializer.data,
+            }
+        )
+
+
+class TableDetailAPIView(APIView):
+    def get(self, request, id):
+        table = Table.objects.get(id=id)
+        serializer = TableSerializer(table)
+        return Response(serializer.data)
+
+    def put(self, request, id):
+        table = Table.objects.get(id=id)
+        serializer = TableSerializer(table, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
+    def delete(self, request, id):
+        table = Table.objects.get(id=id)
+        table.delete()
+        return Response({"message": "Data has been deleted."})
