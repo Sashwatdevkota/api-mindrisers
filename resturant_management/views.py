@@ -9,12 +9,65 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
+
 
 from .models import Category, Table, OrderMenu
 from .serializer import (
     CategorySerializer,
     TableSerializer,
 )  # importing serializers(converting queryset to json)
+
+###############################################
+# View Set
+###############################################
+
+
+class CategoryViewSet(ViewSet):
+    def list(self, request):
+        category = Category.objects.all()
+        serializer = CategorySerializer(category, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"message": "Data added", "result": serializer.data})
+
+
+class CategoryDetailViewSet(ViewSet):
+    def retrieve(self, request, id):
+        category = Category.objects.get(id=id)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+    def update(self, request, id):
+        category = Category.objects.get(id=id)
+        serializer = CategorySerializer(category, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
+    def destroy(self, request, id):
+        category = Category.objects.get(id=id)
+
+        item = OrderMenu.objects.filter(menu__category=category).count()
+
+        if item > 0:
+            return Response(
+                {"message": "Data can't be deleted. Protected Foreign Key in OrderMenu"}
+            )
+
+        category.delete()
+        return Response({"message": "Data has been deleted."})
+
 
 ###############################################
 # Concrete Generic Views

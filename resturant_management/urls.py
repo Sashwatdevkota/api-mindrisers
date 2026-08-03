@@ -5,9 +5,27 @@ urlpatterns = [
     path("", index),
     path("index/", index),
     #
-    path("category/", CategoryConcreteGeneric.as_view()),
-    path("category/<id>/", CategoryDetailConcreteGeneric.as_view()),
+    path(
+        "category/",
+        CategoryViewSet.as_view(
+            {
+                "get": "list",
+                "post": "create",
+            }
+        ),
+    ),
+    path(
+        "category/<int:id>/",
+        CategoryDetailViewSet.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "delete": "destroy",
+            }
+        ),
+    ),
     #
     path("table/", TableConcreteGeneric.as_view()),
     path("table/<id>/", TableDetailConcreteGeneric.as_view()),
+    #
 ]
