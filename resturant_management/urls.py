@@ -4,6 +4,7 @@ from rest_framework import routers
 
 route = routers.SimpleRouter()
 route.register("category", CategoryModelViewSet)
+route.register("table", TableModelViewSet)
 
 urlpatterns = [
     # path("", index),

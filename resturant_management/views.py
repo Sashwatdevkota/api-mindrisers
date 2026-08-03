@@ -9,11 +9,12 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ViewSet, ModelViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet, ReadOnlyModelViewSet
 
 
 from .models import Category, Table, OrderMenu
 from .serializer import (
+    CategoryModelSerializer,
     CategorySerializer,
     TableSerializer,
 )  # importing serializers(converting queryset to json)
@@ -25,7 +26,27 @@ from .serializer import (
 
 class CategoryModelViewSet(ModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = CategoryModelSerializer
+
+    def destroy(self, request, id):
+        category = Category.objects.get(id=id)
+
+        item = OrderMenu.objects.filter(menu__category=category).count()
+
+        if item > 0:
+            return Response(
+                {"message": "Data can't be deleted. Protected Foreign Key in OrderMenu"}
+            )
+
+        category.delete()
+        return Response({"message": "Data has been deleted."})
+
+
+class TableModelViewSet(ModelViewSet):
+
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+    lookup_field = "id"
 
 
 ###############################################
@@ -34,13 +55,14 @@ class CategoryModelViewSet(ModelViewSet):
 
 
 class CategoryViewSet(ViewSet):
+
     def list(self, request):
         category = Category.objects.all()
         serializer = CategorySerializer(category, many=True)
         return Response(serializer.data)
 
     def create(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = CategorySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"message": "Data added", "result": serializer.data})
@@ -76,6 +98,54 @@ class CategoryDetailViewSet(ViewSet):
             )
 
         category.delete()
+        return Response({"message": "Data has been deleted."})
+
+
+class TableViewSet(ViewSet):
+
+    def list(self, request):
+        queryset = Table.objects.all()
+
+        serializer = TableSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = TableSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data added successfully.",
+                "result": serializer.data,
+            },
+        )
+
+
+class TableDetailViewSet(ViewSet):
+    def retrieve(self, request, id):
+        table = Table.objects.get(id=id)
+        serializer = TableSerializer(table)
+        return Response(serializer.data)
+
+    def update(self, request, id):
+        table = Table.objects.get(id=id)
+        serializer = TableSerializer(table, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
+    def destroy(self, request, id):
+        table = Table.objects.get(id=id)
+        table.delete()
         return Response({"message": "Data has been deleted."})
 
 

@@ -1,5 +1,12 @@
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 from .models import *
+
+
+class CategoryModelSerializer(ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
 
 
 class CategorySerializer(serializers.Serializer):
@@ -15,6 +22,12 @@ class CategorySerializer(serializers.Serializer):
         instance.save()
 
         return instance
+
+
+class TableModelSerializer(ModelSerializer):
+    class Meta:
+        model = Table
+        fields = "__all__"
 
 
 class TableSerializer(serializers.Serializer):
