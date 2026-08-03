@@ -1,18 +1,24 @@
 from django.shortcuts import render
+
+from rest_framework import mixins
 from rest_framework.decorators import api_view
-from django.http import HttpResponse
+from rest_framework.generics import (
+    GenericAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from rest_framework.response import Response
-from .models import *  # importing all models
-from .serializer import *  # importing all serializers(converting queryset to json)
+from rest_framework.views import APIView
+
+from .models import Category, Table, OrderMenu
+from .serializer import (
+    CategorySerializer,
+    TableSerializer,
+)  # importing serializers(converting queryset to json)
 
 ###############################################
 # Concrete Generic Views
 ###############################################
-
-from rest_framework.generics import (
-    ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView,
-)
 
 
 class CategoryConcreteGeneric(ListCreateAPIView):
@@ -58,9 +64,6 @@ class TableDetailConcreteGeneric(RetrieveUpdateDestroyAPIView):
 ###############################################
 # GenericAPIView + Mixins
 ###############################################
-
-from rest_framework.generics import GenericAPIView
-from rest_framework import mixins
 
 
 class CategoryMixinGeneric(
@@ -148,8 +151,6 @@ class TableDetailMixinGeneric(
 ###############################################
 # GenericAPIView
 ###############################################
-
-# from rest_framework.generics import GenericAPIView
 
 
 class CategoryGenericAPIView(GenericAPIView):
@@ -254,8 +255,6 @@ class TableDetailGenericAPIView(GenericAPIView):
 # APIView
 ###############################################
 
-from rest_framework.views import APIView
-
 
 class CategoryAPIView(APIView):
     def get(self, request):
@@ -349,3 +348,109 @@ class TableDetailAPIView(APIView):
         table = Table.objects.get(id=id)
         table.delete()
         return Response({"message": "Data has been deleted."})
+
+
+###############################################
+# Function Based Views (FBV)
+###############################################
+
+
+@api_view(["GET", "POST"])
+def category_list(request):
+    if request.method == "GET":
+        category = Category.objects.all()
+        serializer = CategorySerializer(category, many=True)
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+        serializer = CategorySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data added",
+                "result": serializer.data,
+            }
+        )
+
+
+@api_view(["GET", "PUT", "DELETE"])
+def category_detail(request, id):
+    category = Category.objects.get(id=id)
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+        serializer = CategorySerializer(category, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
+    elif request.method == "DELETE":
+        item = OrderMenu.objects.filter(menu__category=category).count()
+
+        if item > 0:
+            return Response(
+                {"message": "Data can't be deleted. Protected Foreign Key in OrderMenu"}
+            )
+
+        category.delete()
+        return Response({"message": "Data has been deleted."})
+
+
+@api_view(["GET", "POST"])
+def table_list(request):
+    if request.method == "GET":
+        table = Table.objects.all()
+        serializer = TableSerializer(table, many=True)
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+        serializer = TableSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data added",
+                "result": serializer.data,
+            }
+        )
+
+
+@api_view(["GET", "PUT", "DELETE"])
+def table_detail(request, id):
+    table = Table.objects.get(id=id)
+
+    if request.method == "GET":
+        serializer = TableSerializer(table)
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+        serializer = TableSerializer(table, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Data updated successfully",
+                "result": serializer.data,
+            }
+        )
+
+    elif request.method == "DELETE":
+        table.delete()
+        return Response({"message": "Data has been deleted."})
+
+
+def index(request):
+    return render(request, "index.html")
