@@ -17,6 +17,7 @@ from .serializer import (
     CategoryModelSerializer,
     CategorySerializer,
     TableSerializer,
+    TableModelSerializer,
 )  # importing serializers(converting queryset to json)
 
 ############################
@@ -45,7 +46,7 @@ class CategoryModelViewSet(ModelViewSet):
 class TableModelViewSet(ModelViewSet):
 
     queryset = Table.objects.all()
-    serializer_class = TableSerializer
+    serializer_class = TableModelSerializer
     lookup_field = "id"
 
 
