@@ -12,13 +12,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet, ModelViewSet, ReadOnlyModelViewSet
 
 
-from .models import Category, Table, OrderMenu
-from .serializer import (
-    CategoryModelSerializer,
-    CategorySerializer,
-    TableSerializer,
-    TableModelSerializer,
-)  # importing serializers(converting queryset to json)
+from .models import *
+from .serializer import *  # importing serializers(converting queryset to json)
 
 ############################
 # ModelViewSet
@@ -47,6 +42,13 @@ class TableModelViewSet(ModelViewSet):
 
     queryset = Table.objects.all()
     serializer_class = TableModelSerializer
+    lookup_field = "id"
+
+
+class MenuModelViewSet(ModelViewSet):
+
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
     lookup_field = "id"
 
 
