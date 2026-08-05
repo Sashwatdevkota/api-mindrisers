@@ -85,7 +85,7 @@ class MenuSerializer(ModelSerializer):
             "category",
             "price",
             "price_with_tax",
-            "price_with_discount",
+            "price_with_discount", 
         ]
 
     def get_price_with_tax(self, menu: Meta.model):

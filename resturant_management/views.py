@@ -10,10 +10,11 @@ from rest_framework.generics import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet, ModelViewSet, ReadOnlyModelViewSet
-
-
+from rest_framework.pagination import PageNumberPagination
+from .pagination import CategoryPagination
 from .models import *
 from .serializer import *  # importing serializers(converting queryset to json)
+from rest_framework import filters
 
 ############################
 # ModelViewSet
@@ -23,6 +24,7 @@ from .serializer import *  # importing serializers(converting queryset to json)
 class CategoryModelViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategoryModelSerializer
+    pagination_class = CategoryPagination
 
     def destroy(self, request, id):
         category = Category.objects.get(id=id)
@@ -50,6 +52,9 @@ class MenuModelViewSet(ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     lookup_field = "id"
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
 
 
 ###############################################
