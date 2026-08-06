@@ -15,6 +15,7 @@ from .pagination import CategoryPagination
 from .models import *
 from .serializer import *  # importing serializers(converting queryset to json)
 from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 ############################
 # ModelViewSet
@@ -47,14 +48,17 @@ class TableModelViewSet(ModelViewSet):
     lookup_field = "id"
 
 
-class MenuModelViewSet(ModelViewSet):
+from .filters import MenuFilter
 
-    queryset = Menu.objects.all()
+
+class MenuModelViewSet(ModelViewSet):
+    queryset = Menu.objects.select_related("category").all()
     serializer_class = MenuSerializer
-    lookup_field = "id"
     pagination_class = PageNumberPagination
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["name"]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = MenuFilter
+    # filterset_fields = ['category']
+    search_fields = ["name", "category__name"]
 
 
 ###############################################
