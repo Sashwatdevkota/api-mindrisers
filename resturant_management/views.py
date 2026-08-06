@@ -49,6 +49,7 @@ class TableModelViewSet(ModelViewSet):
 
 
 from .filters import MenuFilter
+from rest_framework.permissions import IsAuthenticated
 
 
 class MenuModelViewSet(ModelViewSet):
@@ -59,6 +60,7 @@ class MenuModelViewSet(ModelViewSet):
     filterset_class = MenuFilter
     # filterset_fields = ['category']
     search_fields = ["name", "category__name"]
+    permission_classes = [IsAuthenticated]
 
 
 ###############################################
