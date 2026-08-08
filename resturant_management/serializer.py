@@ -13,7 +13,7 @@ class CategoryModelSerializer(ModelSerializer):
         item = Category.objects.filter(name=validated_data.get("name")).count()
         if item > 0:
             raise serializers.ValidationError()
-        return super().save(self.instance, **kwargs)
+        return super().save(**kwargs)
 
     # def create(self, validated_data):
     #     item = Category.objects.filter(name=validated_data.get("name")).count()
@@ -85,7 +85,7 @@ class MenuSerializer(ModelSerializer):
             "category",
             "price",
             "price_with_tax",
-            "price_with_discount", 
+            "price_with_discount",
         ]
 
     def get_price_with_tax(self, menu: Meta.model):
